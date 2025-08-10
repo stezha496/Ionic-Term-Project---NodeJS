@@ -96,6 +96,13 @@ app.delete('/delete-all/', async (req, res) => {
 app.get('/get-all/', async (req, res) => {
     try {
         console.log("get-all running");
+        collection.find(req.query).then(result => {
+            res.send(result);
+            console.log(result);
+        })
+            .catch(err => {
+                console.log(err);
+            });
     }
     catch (error) {
         console.error('Error in get all:', error);
