@@ -26,6 +26,7 @@ app.post('/create-storage/', async (req, res) => {
     try {
         const { databaseName, schemaName } = req.body;
         // Validate input
+        // TODO: remove .status() and throw a error instead.
         if (!databaseName || !schemaName) {
             return res.status(400).json({
                 success: false,
@@ -46,25 +47,14 @@ app.post('/create-storage/', async (req, res) => {
         // Connect to DB
         mongoose.connect(connectionString);
         const db = mongoose.connection;
-
         db.on('error', (err) => { console.log(err); });
 
-        console.log(`Created model: ${schemaName} in database: ${databaseName}`);
-
-        // res.status(201).json({
-        //     message: `Successfully created storage for database: ${databaseName}, schema: ${schemaName}`,
-        //     databaseName,
-        //     schemaName
-        // });
+        // console.log(`Created model: ${schemaName} in database: ${databaseName}`);
 
         created = true;
 
     } catch (error) {
         console.error('Error in create-storage:', error);
-        res.status(500).json({
-            message: 'Internal server error',
-            error: error.message
-        });
     }
 });
 
@@ -84,10 +74,6 @@ app.post('/batch-insert/', async (req, res) => {
     }
     catch (error) {
         console.error('Error in insert many-storage:', error);
-        res.status(500).json({
-            message: 'Internal server error',
-            error: error.message
-        });
     }
 });
 
@@ -103,6 +89,26 @@ app.delete('/delete-all/', async (req, res) => {
     }
     catch (error) {
         console.error('Error in delete all:', error);
+    }
+});
+
+// Get all
+app.get('/get-all/', async (req, res) => {
+    try {
+        console.log("get-all running");
+    }
+    catch (error) {
+        console.error('Error in get all:', error);
+    }
+});
+
+// Update a item
+app.put('/update', (req, res) => {
+    try {
+        console.log("update running");
+    }
+    catch (error) {
+        console.error('Error in update:', error);
     }
 });
 
