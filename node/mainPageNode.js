@@ -22,8 +22,6 @@ let collection = null;
 
 // Create db and schema
 app.post('/create-storage/', async (req, res) => {
-    // console.log("create-storage running");
-    console.log(req.body);
     try {
         const { databaseName, schemaName } = req.body;
         // Validate input
@@ -49,8 +47,6 @@ app.post('/create-storage/', async (req, res) => {
         mongoose.connect(connectionString);
         const db = mongoose.connection;
         db.on('error', (err) => { console.log(err); });
-
-        // console.log(`Created model: ${schemaName} in database: ${databaseName}`);
 
         created = true;
 
@@ -96,7 +92,6 @@ app.delete('/delete-all/', async (req, res) => {
 // Delete given item
 // TODO: I don't know why this works this way but it doesn't work using query.
 app.delete('/delete/', async (req, res) => {
-    console.log(req.body);
     try {
         collection.deleteOne(req.body).then(result => {
             res.send({ "message": result.deletedCount });
@@ -129,7 +124,6 @@ app.get('/get-all/', async (req, res) => {
 // Add item
 app.post("/insert/", (req, res) => {
     let input = req.body.data
-    console.log(input);
     collection.create(input)
         .then(
             result => {
@@ -144,7 +138,17 @@ app.post("/insert/", (req, res) => {
 // Update a item
 app.put('/update/', (req, res) => {
     try {
-        console.log("update running");
+        let input = req.body.itemInfo;
+        const query = input.Question;
+        const updateFields = input.Answer;
+        collection.updateOne({ Question: query }, input)
+            .then(
+                result => {
+                    res.send(result);
+                })
+            .catch(err => {
+                console.log(err);
+            });
     }
     catch (error) {
         console.error('Error in update:', error);
