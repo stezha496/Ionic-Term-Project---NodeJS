@@ -7,6 +7,7 @@ const mongoose = require('mongoose'); // Install: $ npm install mongoose
 mongoose.set('strictQuery', true);
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Add this too for form data
 app.use(cors());
 
 // Schema structure based on mainSchema from original file
@@ -92,13 +93,29 @@ app.delete('/delete-all/', async (req, res) => {
     }
 });
 
+// Delete given item
+// TODO: I don't know why this works this way but it doesn't work using query.
+app.delete('/delete/', async (req, res) => {
+    console.log(req.body);
+    try {
+        collection.deleteOne(req.body).then(result => {
+            res.send({ "message": result.deletedCount });
+        })
+            .catch(err => {
+                console.log(err);
+            });
+        console.log(`Deleted item`);
+    }
+    catch (error) {
+        console.error('Error in delete:', error);
+    }
+});
+
 // Get all
 app.get('/get-all/', async (req, res) => {
     try {
-        console.log("get-all running");
         collection.find(req.query).then(result => {
             res.send(result);
-            console.log(result);
         })
             .catch(err => {
                 console.log(err);
@@ -109,8 +126,23 @@ app.get('/get-all/', async (req, res) => {
     }
 });
 
+// Add item
+app.post("/insert/", (req, res) => {
+    let input = req.body.data
+    console.log(input);
+    collection.create(input)
+        .then(
+            result => {
+                res.send({ "message": 'Record added' });
+            })
+        .catch(err => {
+            console.log(err);
+        });
+
+});//end of post 
+
 // Update a item
-app.put('/update', (req, res) => {
+app.put('/update/', (req, res) => {
     try {
         console.log("update running");
     }
